@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.28)
-set(СMAKE_CXX_SCAN_FOR_MODULES OFF)
+set(CMAKE_CXX_SCAN_FOR_MODULES OFF)
 
 project(apong 
     VERSION 0.1.0
