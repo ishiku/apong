@@ -1,0 +1,132 @@
+{
+  "version": 6,
+  "cmakeMinimumRequired": {
+    "major": 4,
+    "minor": 4,
+    "patch": 0
+  },
+  "configurePresets": [
+    {
+      "name": "linux-base",
+      "hidden": true,
+      "generator": "Ninja",
+      "binaryDir": "${sourceDir}/build/${presetName}",
+      "cacheVariables": {
+        "CMAKE_EXPORT_COMPILE_COMMANDS": "ON",
+        "GAME_ENABLE_TESTING": "ON",
+        "GAME_ENABLE_WARNINGS": "ON",
+        "GAME_WARNINGS_AS_ERROR": "OFF",
+        "GAME_ENABLE_IPO": "OFF",
+        "GAME_ENABLE_SANITIZER_ADDRESS": "OFF",
+        "GAME_ENABLE_SANITIZER_MEMORY": "OFF",
+        "GAME_ENABLE_SANITIZER_THREAD": "OFF",
+        "GAME_ENABLE_SANITIZER_UNDEFINED": "OFF",
+        "GAME_ENABLE_CLANG_TIDY": "OFF",
+        "GAME_ENABLE_CPPCHECK": "OFF",
+        "GAME_ENABLE_CACHE": "ON"
+      },
+      "condition": {
+        "type": "equals",
+        "lhs": "${hostSystemName}",
+        "rhs": "Linux"
+      }
+    },
+
+    {
+      "name": "linux-debug",
+      "displayName": "Linux Debug",
+      "description": "Linux base Debug: warnings, tests, ccache",
+      "inherits": "linux-base",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug"
+      }
+    },
+
+    {
+      "name": "linux-debug-sanitizers",
+      "displayName": "Linux Debug + AddressSanitizer + Undefined",
+      "description": "Debug with AddressSanitizer + Undefined",
+      "inherits": "linux-base",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug",
+        "GAME_ENABLE_SANITIZER_ADDRESS": "ON",
+        "GAME_ENABLE_SANITIZER_UNDEFINED": "ON"
+      }
+    },
+
+    {
+      "name": "linux-debug-analysis",
+      "displayName": "Linux Debug + static analysis",
+      "description": "Debug with clang-tidy and cppcheck",
+      "inherits": "linux-base",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug",
+        "GAME_ENABLE_CLANG_TIDY": "ON",
+        "GAME_ENABLE_CPPCHECK": "ON"
+      }
+    },
+
+    {
+      "name": "linux-debug-werror",
+      "displayName": "Linux Debug + warnings as errors",
+      "description": "Debug with strict (Werror)",
+      "inherits": "linux-base",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug",
+        "GAME_WARNINGS_AS_ERROR": "ON"
+      }
+    }
+  ],
+  "buildPresets": [
+    {
+      "name": "linux-debug",
+      "configurePreset": "linux-debug"
+    },
+    {
+      "name": "linux-debug-sanitizers",
+      "configurePreset": "linux-debug-sanitizers"
+    },
+    {
+      "name": "linux-debug-analysis",
+      "configurePreset": "linux-debug-analysis"
+    },
+    {
+      "name": "linux-debug-werror",
+      "configurePreset": "linux-debug-werror"
+    }
+  ],
+  "testPresets": [
+    {
+      "name": "linux-debug",
+      "configurePreset": "linux-debug",
+      "output": {
+        "outputOnFailure": true
+      }
+    },
+    {
+      "name": "linux-debug-sanitizers",
+      "configurePreset": "linux-debug-sanitizers",
+      "output": {
+        "outputOnFailure": true
+      },
+      "environment": {
+        "ASAN_OPTIONS": "detect_leaks=1:halt_on_error=1",
+        "UBSAN_OPTIONS": "print_stacktrace=1:halt_on_error=1"
+      }
+    },
+    {
+      "name": "linux-debug-analysis",
+      "configurePreset": "linux-debug-analysis",
+      "output": {
+        "outputOnFailure": true
+      }
+    },
+    {
+      "name": "linux-debug-werror",
+      "configurePreset": "linux-debug-werror",
+      "output": {
+        "outputOnFailure": true
+      }
+    }
+  ]
+}
