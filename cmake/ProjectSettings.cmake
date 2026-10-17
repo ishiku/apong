@@ -36,7 +36,7 @@ function(game_project_settings target)
         endif()
 
         target_compile_options(${target} PRIVATE
-            $<$<COMPILE_LANGUAGE:CXX>:${PROJECT_WARNINGS_CXX}>
+            "$<$<COMPILE_LANGUAGE:CXX>:${PROJECT_WARNINGS_CXX}>"
         )
     endif()
 
@@ -50,13 +50,23 @@ function(game_project_settings target)
     endif()
 
     if(GAME_ENABLE_CLANG_TIDY)
-        set_property(TARGET ${target} PROPERTY CXX_CLANG_TIDY "${GAME_CLANG_TIDY_EXE}" "--config-file=${CMAKE_SOURCE_DIR}/.clang-tidy")
+        find_program(GAME_CLANG_TIDY_EXE NAMES clang-tidy)
+        if(GAME_CLANG_TIDY_EXE)
+            set_property(TARGET ${target} PROPERTY CXX_CLANG_TIDY "${GAME_CLANG_TIDY_EXE}" "--config-file=${CMAKE_SOURCE_DIR}/.clang-tidy")
+        else()
+            message(FATAL_ERROR "GAME_ENABLE_CLANG_TIDY is ON, but clang-tidy was not found")
+        endif()
     endif()
 
     if(GAME_ENABLE_CPPCHECK)
-        set_target_properties(${target} PROPERTIES
-            CXX_CPPCHECK "${GAME_CPPCHECK_EXE};--enable=warning,performance,portability;--inline-suppr;--error-exitcode=1"
-        )
+        find_program(GAME_CPPCHECK_EXE NAMES cppcheck)
+        if(GAME_CPPCHECK_EXE)
+            set_target_properties(${target} PROPERTIES
+                CXX_CPPCHECK "${GAME_CPPCHECK_EXE};--enable=warning,performance,portability;--inline-suppr;--error-exitcode=1"
+            )
+        else()
+            message(FATAL_ERROR "GAME_ENABLE_CPPCHECK is ON, but cppcheck was not found")
+        endif()
     endif()
 
     if(GAME_ENABLE_CACHE)

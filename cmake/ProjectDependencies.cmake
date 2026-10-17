@@ -2,7 +2,7 @@ include(CPM)
 
 function(game_setup_dependencies)
 
-    if(NOT TARGET GTest::gtest_main)
+    if(GAME_ENABLE_TESTING AND NOT TARGET GTest::gtest_main)
         cpmaddpackage(
             NAME
                 googletest
