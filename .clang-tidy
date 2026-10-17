@@ -27,7 +27,7 @@ clang-analyzer-*,
 
 
 WarningsAsErrors: '*'
-HeaderFilterRegex: '*game/[^f].*'
+HeaderFilterRegex: '.*game/[^f].*'
 FormatStyle:     none
 
 CheckOptions:    
