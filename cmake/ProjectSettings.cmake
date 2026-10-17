@@ -23,6 +23,15 @@ set(SANITIZE_MEMORY ${GAME_ENABLE_SANITIZER_MEMORY})
 set(SANITIZE_THREAD ${GAME_ENABLE_SANITIZER_THREAD})
 set(SANITIZE_UNDEFINED ${GAME_ENABLE_SANITIZER_UNDEFINED})
 
+if(GAME_ENABLE_IPO)
+    include(CheckIPOSupported)
+    check_ipo_supported(RESULT _game_ipo_supported OUTPUT _game_ipo_output LANGUAGES CXX)
+    if(NOT _game_ipo_supported)
+        message(FATAL_ERROR "GAME_ENABLE_IPO is ON, but IPO is not supported: ${_game_ipo_output}")
+    endif()
+endif()
+
+
 function(game_project_settings target)
     target_compile_features(${target} PRIVATE cxx_std_23)
 
@@ -42,6 +51,7 @@ function(game_project_settings target)
 
     if(GAME_ENABLE_IPO)
         set_property(TARGET ${target} PROPERTY INTERPROCEDURAL_OPTIMIZATION_RELEASE TRUE)
+        set_property(TARGET ${target} PROPERTY INTERPROCEDURAL_OPTIMIZATION_MINSIZEREL TRUE)
     endif()
 
     if(SANITIZE_ADDRESS OR SANITIZE_MEMORY OR SANITIZE_THREAD OR SANITIZE_UNDEFINED)
