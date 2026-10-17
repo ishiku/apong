@@ -1,8 +1,8 @@
 {
   "version": 6,
   "cmakeMinimumRequired": {
-    "major": 4,
-    "minor": 4,
+    "major": 3,
+    "minor": 28,
     "patch": 0
   },
   "configurePresets": [
@@ -75,6 +75,18 @@
         "CMAKE_BUILD_TYPE": "Debug",
         "GAME_WARNINGS_AS_ERROR": "ON"
       }
+    },
+
+    {
+      "name": "linux-release",
+      "displayName": "Linux Release + IPO + warnings as errors",
+      "description": "Release with IPO, strict (Werror), tests",
+      "inherits": "linux-base",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Release",
+        "GAME_WARNINGS_AS_ERROR": "ON",
+        "GAME_ENABLE_IPO": "ON"
+      }
     }
   ],
   "buildPresets": [
@@ -93,6 +105,10 @@
     {
       "name": "linux-debug-werror",
       "configurePreset": "linux-debug-werror"
+    },
+    {
+      "name": "linux-release",
+      "configurePreset": "linux-release"
     }
   ],
   "testPresets": [
@@ -124,6 +140,13 @@
     {
       "name": "linux-debug-werror",
       "configurePreset": "linux-debug-werror",
+      "output": {
+        "outputOnFailure": true
+      }
+    },
+    {
+      "name": "linux-release",
+      "configurePreset": "linux-release",
       "output": {
         "outputOnFailure": true
       }
